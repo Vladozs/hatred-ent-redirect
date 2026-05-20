@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный симулятор физических принципов радиосвязи</title>
+
+    <!-- ==================== СТИЛИ ==================== -->
+    <style>
+        :root {
+            --bg: #0b0d17;
+            --card-bg: #141829;
+            --card-border: #1e2640;
+            --text: #e0e2ea;
+            --text-secondary: #a0a5b8;
+            --accent-am: #ff7b42;
+            --accent-fm: #5eb8ff;
+            --accent-info: #ffc857;
+            --accent-carrier: #4dccbd;
+            --accent-modulated: #c77dff;
+            --slider-track: #2a3150;
+            --slider-thumb: #ffffff;
+            --radius: 16px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Шапка */
+        .header {
+            text-align: center;
+            padding: 28px 20px 10px;
+        }
+        .header h1 {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #c0d0ff 0%, #8bb8ff 50%, #a0d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        .header .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Карточка */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: clamp(16px, 3vw, 24px);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        /* Панель управления */
+        .controls-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .sliders-group {
+            flex: 1 1 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .slider-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .slider-item label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.01em;
+        }
+        .slider-item label .value-tag {
+            font-weight: 500;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            background: var(--slider-track);
+            padding: 2px 10px;
+            border-radius: 20px;
+            min-width: 50px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        /* Кастомный range */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 8px;
+            background: var(--slider-track);
+            outline: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            border: 3px solid var(--accent-carrier);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            border-color: #fff;
+            box-shadow: 0 4px 18px rgba(77, 204, 189, 0.5);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            border: 3px solid var(--accent-carrier);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Переключатель модуляции */
+        .modulation-toggle {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+            min-width: 180px;
+        }
+        .modulation-toggle span.legend {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+        .toggle-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .toggle-btn {
+            flex: 1 1 auto;
+            min-width: 80px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: 2px solid var(--card-border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: var(--font);
+        }
+        .toggle-btn:hover {
+            border-color: #5a6080;
+            color: #fff;
+        }
+        .toggle-btn.active-am {
+            background: var(--accent-am);
+            border-color: var(--accent-am);
+            color: #1a1a1a;
+            box-shadow: 0 4px 20px rgba(255, 123, 66, 0.35);
+        }
+        .toggle-btn.active-fm {
+            background: var(--accent-fm);
+            border-color: var(--accent-fm);
+            color: #1a1a1a;
+            box-shadow: 0 4px 20px rgba(94, 184, 255, 0.35);
+        }
+
+        /* Графики */
+        .charts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .chart-wrapper {
+            background: #0d1020;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 8px 8px 4px 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            padding: 2px 10px 6px;
+            text-align: center;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            background: #060810;
+        }
+
+        /* Блок «Как это работает» */
+        .info-block {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+        }
+        .info-block h3 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .info-block p {
+            margin-bottom: 10px;
+        }
+        .info-block strong {
+            color: #fff;
+            font-weight: 600;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .comparison .col {
+            background: #0d1020;
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid var(--card-border);
+        }
+        .comparison .col h4 {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .comparison .col h4.am-title {
+            color: var(--accent-am);
+        }
+        .comparison .col h4.fm-title {
+            color: var(--accent-fm);
+        }
+        .comparison .col p {
+            font-size: 0.84rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 650px) {
+            .controls-panel {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .modulation-toggle {
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            .toggle-buttons {
+                flex: 1;
+            }
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            .card {
+                padding: 14px;
+            }
+            canvas {
+                height: 140px !important;
+            }
+        }
+        @media (max-width: 380px) {
+            body {
+                padding: 8px;
+            }
+            .toggle-btn {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            canvas {
+                height: 110px !important;
+            }
+            .slider-item label {
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <h1>📡 Интерактивный симулятор физических принципов радиосвязи</h1>
+            <p class="subtitle">
+                Учебное пособие по теме «Развитие средств связи и радио».
+                Этот симулятор наглядно демонстрирует, как низкочастотный звуковой сигнал модулирует высокочастотную несущую радиоволну
+                с помощью амплитудной (AM) или частотной (FM) модуляции.
+            </p>
+        </header>
+
+        <!-- Панель управления -->
+        <div class="card controls-panel">
+            <div class="sliders-group">
+                <div class="slider-item">
+                    <label>🎤 Амплитуда звукового сигнала <span class="value-tag" id="valInfoAmp">0.6</span></label>
+                    <input type="range" id="infoAmp" min="0.1" max="1.0" step="0.05" value="0.6">
+                </div>
+                <div class="slider-item">
+                    <label>🎵 Частота звукового сигнала <span class="value-tag" id="valInfoFreq">3.0 Гц</span></label>
+                    <input type="range" id="infoFreq" min="0.5" max="8" step="0.1" value="3.0">
+                </div>
+                <div class="slider-item">
+                    <label>📶 Частота несущей радиоволны <span class="value-tag" id="valCarrierFreq">18 Гц</span></label>
+                    <input type="range" id="carrierFreq" min="8" max="35" step="0.5" value="18">
+                </div>
+            </div>
+            <div class="modulation-toggle">
+                <span class="legend">Тип модуляции:</span>
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active-am" id="btnAM" aria-pressed="true">📢 AM</button>
+                    <button class="toggle-btn" id="btnFM" aria-pressed="false">📻 FM</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Графики -->
+        <div class="charts-section card">
+            <div class="chart-wrapper">
+                <div class="chart-label" style="color: #ffc857;">📊 График 1 — Информационный сигнал (звук)</div>
+                <canvas id="canvasInfo" aria-label="График информационного сигнала"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-label" style="color: #4dccbd;">📊 График 2 — Несущий сигнал (радиоволна)</div>
+                <canvas id="canvasCarrier" aria-label="График несущего сигнала"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-label" style="color: #c77dff;">📊 График 3 — Модулированный радиосигнал</div>
+                <canvas id="canvasModulated" aria-label="График модулированного сигнала"></canvas>
+            </div>
+        </div>
+
+        <!-- Блок «Как это работает» -->
+        <div class="card info-block">
+            <h3>💡 Как это работает?</h3>
+            <p>
+                Радиосвязь невозможна без <strong>модуляции</strong> — процесса наложения информационного
+                (звукового) сигнала на высокочастотную несущую волну. Без несущей волны звук невозможно
+                передать на большие расстояния, потому что низкочастотные колебания быстро затухают в пространстве.
+            </p>
+            <div class="comparison">
+                <div class="col">
+                    <h4 class="am-title">📢 Амплитудная модуляция (AM)</h4>
+                    <p>
+                        Информационный сигнал <strong>изменяет амплитуду (высоту)</strong> несущей волны.
+                        Частота несущей при этом остаётся постоянной. Простота реализации сделала AM
+                        первым массовым способом радиовещания. Недостаток — чувствительность к помехам.
+                    </p>
+                </div>
+                <div class="col">
+                    <h4 class="fm-title">📻 Частотная модуляция (FM)</h4>
+                    <p>
+                        Информационный сигнал <strong>изменяет частоту</strong> несущей волны
+                        (расстояние между пиками сжимается или растягивается), а амплитуда
+                        остаётся постоянной. FM обеспечивает более чистое и помехоустойчивое звучание.
+                    </p>
+                </div>
+            </div>
+            <p style="margin-top: 12px; font-style: italic; color: #c0c6dd;">
+                🔬 Математическая основа: волны строятся с помощью функции <strong>Math.sin(2π · частота · время + фаза)</strong>.
+                Для AM: <strong>y = (1 + m · info(t)) · carrier(t)</strong>. Для FM: <strong>y = sin(2π·f<sub>c</sub>·t + β · info(t))</strong>,
+                где β — индекс частотной модуляции.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        (function() {
+            // --- Получаем ссылки на DOM-элементы ---
+            const canvasInfo = document.getElementById('canvasInfo');
+            const canvasCarrier = document.getElementById('canvasCarrier');
+            const canvasModulated = document.getElementById('canvasModulated');
+
+            const ctxInfo = canvasInfo.getContext('2d');
+            const ctxCarrier = canvasCarrier.getContext('2d');
+            const ctxModulated = canvasModulated.getContext('2d');
+
+            // Ползунки
+            const sliderInfoAmp = document.getElementById('infoAmp');
+            const sliderInfoFreq = document.getElementById('infoFreq');
+            const sliderCarrierFreq = document.getElementById('carrierFreq');
+
+            // Отображение значений
+            const valInfoAmp = document.getElementById('valInfoAmp');
+            const valInfoFreq = document.getElementById('valInfoFreq');
+            const valCarrierFreq = document.getElementById('valCarrierFreq');
+
+            // Кнопки модуляции
+            const btnAM = document.getElementById('btnAM');
+            const btnFM = document.getElementById('btnFM');
+
+            // --- Текущие параметры сигналов ---
+            let infoAmplitude = parseFloat(sliderInfoAmp.value); // Амплитуда информационного сигнала (0..1)
+            let infoFrequency = parseFloat(sliderInfoFreq.value); // Частота информационного сигнала (условные единицы)
+            let carrierFrequency = parseFloat(sliderCarrierFreq.value); // Частота несущей (условные единицы)
+            let modulationType = 'AM'; // Тип модуляции: 'AM' или 'FM'
+
+            // --- Параметры анимации «бегущей волны» ---
+            // Фазовый сдвиг нарастает со временем, что создаёт иллюзию движения волны слева направо.
+            let animationPhase = 0;
+            const PHASE_SPEED = 2.8; // Скорость «бега» волны (радиан в секунду)
+
+            // Время последнего кадра для расчёта deltaTime
+            let lastTimestamp = 0;
+
+            // --- Размеры канвасов (будут обновляться при ресайзе) ---
+            let canvasWidth = 800;
+            let canvasHeight = 200;
+
+            /**
+             * Подгоняет размеры всех трёх canvas под текущую ширину контейнера.
+             * Вызывается при загрузке и при изменении размера окна.
+             */
+            function resizeCanvases() {
+                // Берём ширину родительского контейнера (chart-wrapper) у первого canvas
+                const wrapper = canvasInfo.parentElement;
+                const rect = wrapper.getBoundingClientRect();
+                // Ширина canvas с учётом внутренних отступов wrapper
+                const availableWidth = rect.width - 16; // 8px padding с каждой стороны
+                // Высота: на мобильных меньше, на десктопе — больше
+                const isMobile = window.innerWidth < 650;
+                const isSmall = window.innerWidth < 380;
+                let newHeight;
+                if (isSmall) newHeight = 110;
+                else if (isMobile) newHeight = 140;
+                else newHeight = 190;
+
+                // Применяем к каждому canvas
+                [canvasInfo, canvasCarrier, canvasModulated].forEach(c => {
+                    c.width = Math.floor(availableWidth);
+                    c.height = newHeight;
+                    // CSS-высоту тоже обновим для плавности
+                    c.style.height = newHeight + 'px';
+                });
+
+                canvasWidth = Math.floor(availableWidth);
+                canvasHeight = newHeight;
+            }
+
+            // --- Обработчики ползунков ---
+            sliderInfoAmp.addEventListener('input', () => {
+                infoAmplitude = parseFloat(sliderInfoAmp.value);
+                valInfoAmp.textContent = infoAmplitude.toFixed(2);
+            });
+            sliderInfoFreq.addEventListener('input', () => {
+                infoFrequency = parseFloat(sliderInfoFreq.value);
+                valInfoFreq.textContent = infoFrequency.toFixed(1) + ' Гц';
+            });
+            sliderCarrierFreq.addEventListener('input', () => {
+                carrierFrequency = parseFloat(sliderCarrierFreq.value);
+                valCarrierFreq.textContent = carrierFrequency.toFixed(1) + ' Гц';
+            });
+
+            // --- Обработчики кнопок AM/FM ---
+            btnAM.addEventListener('click', () => {
+                modulationType = 'AM';
+                btnAM.classList.add('active-am');
+                btnAM.classList.remove('active-fm');
+                btnFM.classList.remove('active-am', 'active-fm');
+                btnAM.setAttribute('aria-pressed', 'true');
+                btnFM.setAttribute('aria-pressed', 'false');
+            });
+            btnFM.addEventListener('click', () => {
+                modulationType = 'FM';
+                btnFM.classList.add('active-fm');
+                btnFM.classList.remove('active-am');
+                btnAM.classList.remove('active-am', 'active-fm');
+                btnFM.setAttribute('aria-pressed', 'true');
+                btnAM.setAttribute('aria-pressed', 'false');
+            });
+
+            // --- Функции отрисовки графиков ---
+
+            /**
+             * Рисует координатную сетку и подписи осей на canvas.
+             * @param {CanvasRenderingContext2D} ctx - Контекст рисования
+             * @param {number} width - Ширина canvas
+             * @param {number} height - Высота canvas
+             */
+            function drawGrid(ctx, width, height) {
+                const midY = height / 2; // Центр по вертикали (ось Y=0 для волны)
+
+                // Полупрозрачная сетка
+                ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+                ctx.lineWidth = 1;
+                // Горизонтальные линии сетки
+                const gridStepY = height / 8;
+                for (let y = gridStepY; y < height; y += gridStepY) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                // Вертикальные линии сетки
+                const gridStepX = width / 12;
+                for (let x = gridStepX; x < width; x += gridStepX) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+
+                // Центральная ось (Y=0) — более яркая
+                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, midY);
+                ctx.lineTo(width, midY);
+                ctx.stroke();
+
+                // Подписи осей
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.font = `${Math.max(10, height / 18)}px ${getComputedStyle(document.body).fontFamily}`;
+                ctx.textAlign = 'left';
+                ctx.fillText('Амплитуда', 6, 16);
+                ctx.textAlign = 'right';
+                ctx.fillText('Время →', width - 8, height - 6);
+                // Метки +1 и -1 на оси Y
+                ctx.textAlign = 'left';
+                ctx.fillText('+1', 6, midY - height * 0.22);
+                ctx.fillText(' 0', 6, midY + 4);
+                ctx.fillText('−1', 6, midY + height * 0.22 + 4);
+            }
+
+            /**
+             * Вычисляет значение информационного сигнала в точке x (0..width).
+             * Используется формула: y = A * sin(2π * f * normalizedX + phase)
+             * где normalizedX пробегает несколько периодов волны на ширине canvas.
+             *
+             * @param {number} x - Координата по горизонтали в пикселях (0 .. canvasWidth)
+             * @param {number} phase - Текущий фазовый сдвиг анимации
+             * @returns {number} Значение сигнала от -infoAmplitude до +infoAmplitude
+             */
+            function getInfoSignal(x, phase) {
+                // Нормализуем x в диапазон [0, 1], затем умножаем на infoFrequency * 2π,
+                // чтобы на ширине canvas уложилось infoFrequency полных периодов.
+                // Коэффициент 6 подобран так, чтобы визуально частота была различима.
+                const normalizedX = (x / canvasWidth) * 6;
+                const angle = 2 * Math.PI * infoFrequency * normalizedX + phase;
+                return infoAmplitude * Math.sin(angle);
+            }
+
+            /**
+             * Вычисляет значение несущего сигнала в точке x.
+             * Формула: y = sin(2π * f_carrier * normalizedX + phase)
+             *
+             * @param {number} x - Координата по горизонтали в пикселях
+             * @param {number} phase - Текущий фазовый сдвиг анимации
+             * @returns {number} Значение сигнала от -1 до +1
+             */
+            function getCarrierSignal(x, phase) {
+                const normalizedX = (x / canvasWidth) * 6;
+                const angle = 2 * Math.PI * carrierFrequency * normalizedX + phase;
+                return Math.sin(angle);
+            }
+
+            /**
+             * Вычисляет значение модулированного сигнала в точке x.
+             * Для AM: carrier(t) * (1 + m * info(t)), где m — глубина модуляции (infoAmplitude).
+             * Для FM: sin(2π * f_c * t + β * info(t)), где β — индекс модуляции (infoAmplitude * 3).
+             *
+             * @param {number} x - Координата по горизонтали в пикселях
+             * @param {number} phase - Текущий фазовый сдвиг анимации
+             * @returns {number} Значение модулированного сигнала
+             */
+            function getModulatedSignal(x, phase) {
+                const normalizedX = (x / canvasWidth) * 6;
+                const infoVal = getInfoSignal(x, phase);
+                const carrierAngle = 2 * Math.PI * carrierFrequency * normalizedX + phase;
+
+                if (modulationType === 'AM') {
+                    // Амплитудная модуляция: несущая умножается на (1 + информационный_сигнал)
+                    // infoAmplitude здесь выступает как глубина модуляции m
+                    const envelope = 1 + infoAmplitude * Math.sin(2 * Math.PI * infoFrequency * normalizedX + phase);
+                    return envelope * Math.sin(carrierAngle);
+                } else {
+                    // Частотная модуляция: фаза несущей сдвигается пропорционально информационному сигналу
+                    // β (индекс модуляции) = infoAmplitude * 3 для наглядности
+                    const beta = infoAmplitude * 3.5;
+                    const fmAngle = carrierAngle + beta * Math.sin(2 * Math.PI * infoFrequency * normalizedX + phase);
+                    return Math.sin(fmAngle);
+                }
+            }
+
+            /**
+             * Рисует волну на canvas по переданной функции signalFn(x, phase).
+             * @param {CanvasRenderingContext2D} ctx - Контекст
+             * @param {number} width - Ширина
+             * @param {number} height - Высота
+             * @param {Function} signalFn - Функция, возвращающая значение сигнала для координаты x и phase
+             * @param {number} phase - Текущая фаза анимации
+             * @param {string} color - Цвет линии волны
+             */
+            function drawWave(ctx, width, height, signalFn, phase, color) {
+                const midY = height / 2;
+                const amplitudeScale = height * 0.38; // Масштаб, чтобы волна занимала ~76% высоты canvas
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2.2;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+
+                // Проходим по каждому пикселю по горизонтали для максимальной плавности
+                for (let x = 0; x <= width; x += 1) {
+                    const signalValue = signalFn(x, phase);
+                    // Преобразуем значение сигнала в координату Y:
+                    // signalValue = +1 → верх холста, signalValue = -1 → низ холста
+                    const y = midY - signalValue * amplitudeScale;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+                // Сбрасываем тень, чтобы не влиять на другие элементы
+                ctx.shadowBlur = 0;
+            }
+
+            /**
+             * Главная функция отрисовки всех трёх графиков.
+             * Вызывается на каждом кадре анимации через requestAnimationFrame.
+             * @param {number} timestamp - Время в миллисекундах с начала загрузки страницы
+             */
+            function renderAll(timestamp) {
+                // Вычисляем deltaTime в секундах для плавной анимации независимо от FPS
+                if (lastTimestamp === 0) lastTimestamp = timestamp;
+                const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.1); // Ограничиваем dt, чтобы избежать скачков
+                lastTimestamp = timestamp;
+
+                // Наращиваем фазу — волны «бегут» слева направо
+                animationPhase += PHASE_SPEED * dt;
+                // Зацикливаем фазу, чтобы избежать переполнения (не обязательно, но аккуратно)
+                if (animationPhase > Math.PI * 1000) animationPhase -= Math.PI * 1000;
+
+                const w = canvasWidth;
+                const h = canvasHeight;
+
+                // --- График 1: Информационный сигнал ---
+                ctxInfo.clearRect(0, 0, w, h);
+                drawGrid(ctxInfo, w, h);
+                drawWave(ctxInfo, w, h, getInfoSignal, animationPhase, '#ffc857');
+
+                // --- График 2: Несущий сигнал ---
+                ctxCarrier.clearRect(0, 0, w, h);
+                drawGrid(ctxCarrier, w, h);
+                drawWave(ctxCarrier, w, h, getCarrierSignal, animationPhase, '#4dccbd');
+
+                // --- График 3: Модулированный сигнал ---
+                ctxModulated.clearRect(0, 0, w, h);
+                drawGrid(ctxModulated, w, h);
+                const modulatedColor = modulationType === 'AM' ? '#ff7b42' : '#5eb8ff';
+                drawWave(ctxModulated, w, h, getModulatedSignal, animationPhase, modulatedColor);
+
+                // Запрашиваем следующий кадр
+                requestAnimationFrame(renderAll);
+            }
+
+            // --- Обработка изменения размера окна ---
+            window.addEventListener('resize', () => {
+                resizeCanvases();
+            });
+
+            // --- Инициализация ---
+            function init() {
+                resizeCanvases();
+                // Устанавливаем начальные отображаемые значения
+                valInfoAmp.textContent = infoAmplitude.toFixed(2);
+                valInfoFreq.textContent = infoFrequency.toFixed(1) + ' Гц';
+                valCarrierFreq.textContent = carrierFrequency.toFixed(1) + ' Гц';
+                // Запускаем анимацию
+                lastTimestamp = 0;
+                requestAnimationFrame(renderAll);
+            }
+
+            // Запуск после полной загрузки страницы
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>
