@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аренда проститутки</title>
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --surface: #ffffff;
+            --border: #e5e5e0;
+            --text: #1c1c1c;
+            --text-secondary: #6b6b6b;
+            --text-muted: #999999;
+            --accent: #2c7a5c;
+            --accent-hover: #236b4e;
+            --accent-light: #eef6f2;
+            --tag-bg: #f3f4f0;
+            --star: #d4a843;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Header / Nav ─────────────────────── */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.3px;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: inline-block;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            transition: color var(--transition);
+        }
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        .btn-cta-sm {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-cta-sm:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ── Main Container ──────────────────── */
+        .main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Hero Section ────────────────────── */
+        .hero {
+            display: flex;
+            gap: 48px;
+            align-items: center;
+            padding: 48px 0 40px;
+            flex-wrap: wrap;
+        }
+        .hero-text {
+            flex: 1 1 400px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.4px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .hero h1 span {
+            color: var(--accent);
+            position: relative;
+        }
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 440px;
+            line-height: 1.5;
+        }
+        .hero-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .hero-feature .check {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .hero-card {
+            flex: 0 0 320px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-card-ribbon {
+            position: absolute;
+            top: 14px;
+            right: -30px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 36px;
+            transform: rotate(45deg);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .hero-card-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #e8e5df;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            border: 3px solid var(--border);
+            color: #8b8b7e;
+        }
+        .hero-card-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+        .hero-card-status {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+        .hero-card-stars {
+            color: var(--star);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+        .hero-card-reviews {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+        .hero-card-prices {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .price-chip {
+            background: var(--tag-bg);
+            border-radius: 10px;
+            padding: 10px 16px;
+            text-align: center;
+            flex: 1;
+            min-width: 90px;
+        }
+        .price-chip .price {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+            letter-spacing: -0.4px;
+        }
+        .price-chip .unit {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Section Titles ─────────────────── */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        /* ── Pricing Table ──────────────────── */
+        .pricing-section {
+            padding: 32px 0 40px;
+            border-top: 1px solid var(--border);
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .pricing-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition), border-color var(--transition);
+            position: relative;
+        }
+        .pricing-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: #d0d0c8;
+        }
+        .pricing-card.popular {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+            background: #fdfefc;
+        }
+        .pricing-card.popular::before {
+            content: 'ПОПУЛЯРНЫЙ ВЫБОР';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 16px;
+            border-radius: 12px;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+        .pricing-card-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .pricing-card-header .plan-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .pricing-card-header .plan-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text);
+        }
+        .pricing-card-header .plan-period {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .pricing-features {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .pricing-features li {
+            padding: 6px 0;
+            border-bottom: 1px solid #f3f3ee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+        .pricing-features .icon-check {
+            color: var(--accent);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .pricing-features .icon-cross {
+            color: #c0bdb5;
+            flex-shrink: 0;
+        }
+        .btn-book {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+        .btn-book:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+        .btn-book.outline {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+        .btn-book.outline:hover {
+            background: var(--accent-light);
+        }
+
+        /* ── About / Details ────────────────── */
+        .details-section {
+            padding: 32px 0 40px;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        @media (max-width: 700px) {
+            .details-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        .details-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .details-box h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.2px;
+        }
+        .details-box ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .details-box ul li {
+            padding: 5px 0;
+            padding-left: 18px;
+            position: relative;
+        }
+        .details-box ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .tag {
+            background: var(--tag-bg);
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 16px;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        /* ── Reviews ────────────────────────── */
+        .reviews-section {
+            padding: 32px 0 40px;
+            border-top: 1px solid var(--border);
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .review-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e0ded8;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #8b8b7e;
+        }
+        .review-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .review-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .review-stars {
+            color: var(--star);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+        .review-text {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        /* ── FAQ ────────────────────────────── */
+        .faq-section {
+            padding: 32px 0 40px;
+            border-top: 1px solid var(--border);
+        }
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+            cursor: default;
+        }
+        .faq-item summary {
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text);
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            transition: transform var(--transition);
+        }
+        .faq-item[open] summary::after {
+            content: '−';
+            transform: rotate(0deg);
+        }
+        .faq-answer {
+            margin-top: 10px;
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ── CTA Banner ─────────────────────── */
+        .cta-banner {
+            background: var(--accent-light);
+            border: 1px solid #d4e5db;
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            text-align: center;
+            margin: 20px 0 36px;
+        }
+        .cta-banner h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+        }
+        .cta-banner p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .btn-cta-lg {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 0.3px;
+            transition: background var(--transition), transform var(--transition);
+        }
+        .btn-cta-lg:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* ── Footer ─────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            letter-spacing: 0.3px;
+        }
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ── Responsive ─────────────────────── */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column-reverse;
+                gap: 24px;
+                padding: 28px 0 24px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero-card {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 340px;
+                margin: 0 auto;
+            }
+            .nav-links {
+                gap: 14px;
+                font-size: 0.78rem;
+            }
+            .header-inner {
+                padding: 0 14px;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+            .details-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Header ────────────────────────────── -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <span class="logo-dot"></span> Аренда проститутки Сургут
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#pricing">Тарифы</a></li>
+                    <li><a href="#details">О друге</a></li>
+                    <li><a href="#reviews">Отзывы</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <a href="#cta" class="btn-cta-sm">Забронировать</a>
+        </div>
+    </header>
+
+    <!-- ── Main Content ──────────────────────── -->
+    <main class="main">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-text">
+                <div class="hero-badge">✓ Проверенный специалист</div>
+                <h1>Возьмите друга <span>в аренду</span></h1>
+                <p class="hero-subtitle">
+                    Когда свои друзья заняты, а поддержка нужна здесь и сейчас.
+                    Профессиональный друг с подтверждённым стажем — Кирилл Zety.
+                </p>
+                <div class="hero-features">
+                    <span class="hero-feature"><span class="check">✓</span> Конфиденциально</span>
+                    <span class="hero-feature"><span class="check">✓</span> Без осуждения</span>
+                    <span class="hero-feature"><span class="check">✓</span> 24/7 (почти)</span>
+                    <span class="hero-feature"><span class="check">✓</span> Опыт 5+ лет</span>
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="hero-card-ribbon">ТОП-2026</div>
+                <div class="hero-card-avatar">🧔</div>
+                <div class="hero-card-name">Кирилл Zety</div>
+                <div class="hero-card-status">● Доступен для аренды</div>
+                <div class="hero-card-stars">★★★★★</div>
+                <div class="hero-card-reviews">4.9 / 5 — на основе 147 отзывов</div>
+                <div class="hero-card-prices">
+                    <div class="price-chip">
+                        <div class="price">500 ₽</div>
+                        <div class="unit">за час</div>
+                    </div>
+                    <div class="price-chip">
+                        <div class="price">2 000 ₽</div>
+                        <div class="unit">за ночь</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="pricing-section" id="pricing">
+            <h2 class="section-title">Тарифы и условия</h2>
+            <p class="section-subtitle">Прозрачные цены. Никаких скрытых платежей. Только честная дружба.</p>
+            <div class="pricing-grid">
+                <!-- Тариф "Почасовой" -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <div class="plan-name">Почасовой</div>
+                        <div class="plan-price">500 ₽</div>
+                        <div class="plan-period">за 1 час</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="icon-check">✓</span> Выслушивание жалоб</li>
+                        <li><span class="icon-check">✓</span> Смех над вашими шутками</li>
+                        <li><span class="icon-check">✓</span> Поддержка в споре</li>
+                        <li><span class="icon-check">✓</span> Совместное молчание</li>
+                        <li><span class="icon-cross">✗</span> Ночные посиделки</li>
+                        <li><span class="icon-cross">✗</span> Помощь с переездом</li>
+                    </ul>
+                    <a href="#cta" class="btn-book outline">Выбрать</a>
+                </div>
+                <!-- Тариф "Ночной" -->
+                <div class="pricing-card popular">
+                    <div class="pricing-card-header">
+                        <div class="plan-name">Ночной</div>
+                        <div class="plan-price">2 000 ₽</div>
+                        <div class="plan-period">за ночь (до 8 часов)</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="icon-check">✓</span> Всё из почасового тарифа</li>
+                        <li><span class="icon-check">✓</span> Ночные разговоры о вечном</li>
+                        <li><span class="icon-check">✓</span> Совместный просмотр фильмов</li>
+                        <li><span class="icon-check">✓</span> Приготовление чая (по желанию)</li>
+                        <li><span class="icon-check">✓</span> Утреннее «Доброе утро»</li>
+                        <li><span class="icon-check">✓</span> Гарантия хорошего настроения</li>
+                    </ul>
+                    <a href="#cta" class="btn-book">Забронировать</a>
+                </div>
+                <!-- Тариф "Индивидуальный" -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <div class="plan-name">Индивидуальный</div>
+                        <div class="plan-price">Договор</div>
+                        <div class="plan-period">особые условия</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="icon-check">✓</span> Полная кастомизация</li>
+                        <li><span class="icon-check">✓</span> Роль «старого друга»</li>
+                        <li><span class="icon-check">✓</span> Сопровождение на мероприятия</li>
+                        <li><span class="icon-check">✓</span> Совместное хобби</li>
+                        <li><span class="icon-check">✓</span> Помощь с переездом</li>
+                        <li><span class="icon-check">✓</span> Экстренный вызов</li>
+                    </ul>
+                    <a href="#cta" class="btn-book outline">Обсудить</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Details -->
+        <section class="details-section" id="details">
+            <div class="details-box">
+                <h3>📋 Что входит в аренду</h3>
+                <ul>
+                    <li>Искреннее внимание к вашим проблемам</li>
+                    <li>Умение хранить секреты (NDA прилагается)</li>
+                    <li>Нейтральная позиция в любых конфликтах</li>
+                    <li>Готовность поддержать любую тему разговора</li>
+                    <li>Отсутствие непрошеных советов</li>
+                    <li>Пунктуальность и опрятный внешний вид</li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag">Без алкоголя</span>
+                    <span class="tag">Без романтики</span>
+                    <span class="tag">Только дружба</span>
+                </div>
+            </div>
+            <div class="details-box">
+                <h3>⚠️ Важные ограничения</h3>
+                <ul>
+                    <li>Не участвует в противоправных действиях</li>
+                    <li>Не даёт в долг (дружба — да, деньги — нет)</li>
+                    <li>Не заменяет психолога или юриста</li>
+                    <li>Не нарушает личные границы</li>
+                    <li>Имеет право взять паузу на чай</li>
+                    <li>Максимальная длительность — 24 часа подряд</li>
+                </ul>
+                <div class="tag-row">
+                    <span class="tag">Честность</span>
+                    <span class="tag">Уважение</span>
+                    <span class="tag">Безопасность</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews -->
+        <section class="reviews-section" id="reviews">
+            <h2 class="section-title">Отзывы клиентов</h2>
+            <p class="section-subtitle">Что говорят люди, которые уже арендовали друга.</p>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">АК</div>
+                        <div>
+                            <div class="review-name">Анна К.</div>
+                            <div class="review-date">12 мая 2026</div>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Заказала Кирилла на вечер, когда рассталась с парнем. Он просто молчал рядом и кивал. Это было именно то, что нужно. Никаких „я же говорила“. Рекомендую.»</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">ДМ</div>
+                        <div>
+                            <div class="review-name">Дмитрий М.</div>
+                            <div class="review-date">3 апреля 2026</div>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Нужен был четвёртый для настолок. Кирилл не только составил компанию, но и ни разу не перевернул поле. Профессионал своего дела.»</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">ЕС</div>
+                        <div>
+                            <div class="review-name">Елена С.</div>
+                            <div class="review-date">28 февраля 2026</div>
+                        </div>
+                        <div class="review-stars">★★★★☆</div>
+                    </div>
+                    <p class="review-text">«Всё понравилось. Единственный минус — Кирилл отказался танцевать под мою любимую группу. Но честно предупредил заранее, так что stars снимать не буду. 4 из 5.»</p>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">МВ</div>
+                        <div>
+                            <div class="review-name">Максим В.</div>
+                            <div class="review-date">10 января 2026</div>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Арендовал друга на ночь, чтобы посмотреть футбол. Кирилл болел за ту же команду. Совпадение? Не думаю. 5 звёзд, вернусь ещё.»</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="faq-section" id="faq">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <p class="section-subtitle">Прозрачность — основа дружбы. Даже арендованной.</p>
+            <details class="faq-item">
+                <summary>Можно ли арендовать Кирилла для романтического свидания?</summary>
+                <p class="faq-answer">Нет. Кирилл — профессиональный эскорт. Любые попытки романтики будут вежливо, но твёрдо отклонены. Для свиданий существуют другие сервисы.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Можно ли вернуть деньги, если проститутка не понравилась?</summary>
+                <p class="faq-answer">Да, в течение первых 15 минут действует гарантия возврата. Если за это время вы поняли, что Кирилл вам не подходит — вы платите только за 15 минут (125 ₽), и мы расстаёмся друзьями. Ирония ситуации прилагается бесплатно.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Кирилл — это настоящее имя?</summary>
+                <p class="faq-answer">Кирилл — да. Zety — творческий псевдоним. Полное происхождение псевдонима является коммерческой тайной, но по одной из версий это аббревиатура. По другой — просто красиво звучит. Третью версию Кирилл расскажет только при личной встрече.</p>
+            </details>
+        </section>
+
+        <!-- CTA -->
+        <div class="cta-banner" id="cta">
+            <h2>Готовы арендовать проститутку?</h2>
+            <p>Оставьте заявку, и Кирилл свяжется с вами в течение 15 минут. <br>Серьёзно. Он всегда на связи. Это немного пугает, но в хорошем смысле.</p>
+            <a href="#" class="btn-cta-lg" onclick="alert('🚀 Заявка принята! Кирилл Zety уже чистит ботинки и готовится к встрече. Ожидайте подтверждения.'); return false;">
+                Оставить заявку
+            </a>
+        </div>
+
+    </main>
+
+    <!-- ── Footer ────────────────────────────── -->
+    <footer class="footer">
+        © 2026 Аренда друга. Все права защищены. ИП «Zety & Co.» —
+        <a href="#">Политика конфиденциальности</a> —
+        <a href="#">Публичная оферта</a> —
+        Кирилл Zety является зарегистрированным товарным знаком хорошего настроения.
+    </footer>
+
+</body>
+</html>
